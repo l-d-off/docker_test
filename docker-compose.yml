@@ -34,5 +34,6 @@ services:
 
 networks:
   default:
-    external: true
-    name: service-net
+    #external: true
+    #name: service-net
+    driver: bridge
