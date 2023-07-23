@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "postgres_db"
+      POSTGRES_USER: "darf"
+      POSTGRES_PASSWORD: "darf"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - /root/test/postgresql/db_scripts:/docker-entrypoint-initdb.d
+      - /root/test/postgresql/db_data:/var/lib/postgresql/data
+    ports:
+      - 5432
+    networks:
+      - default
+
+  python:
+    container_name: python
+    image: python:3.8
+    working_dir: /app
+    volumes:
+      - /root/test/python:/app
+    command: >
+      sh -c "pip install -r require.txt &&
+             python3 script.py"
+    #links:
+    #  - postgres
+    depends_on:
+      - postgres
+    networks:
+      - default
+
+networks:
+  default:
+    external: true
+    name: service-net
